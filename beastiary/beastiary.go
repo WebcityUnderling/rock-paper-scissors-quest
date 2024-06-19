@@ -101,29 +101,23 @@ var Balrog = Beast{
 	WinMessage:    "The Balrog stands triumphant, its furious gaze challenging all who oppose it.",
 }
 
-type Beastiary struct {
-	beasts []Beast
+var Beastiary = []Beast{
+	Kobold,
+	Ghost,
+	HauntedArmor,
+	MossyGolem,
+	GiantCrab,
+	Imp,
+	CrystalSentinel,
+	Doppleganger,
+	Dragon,
+	Balrog,
 }
 
-var GetBeastiary = Beastiary{
-	beasts: []Beast{
-		Kobold,
-		Ghost,
-		HauntedArmor,
-		MossyGolem,
-		GiantCrab,
-		Imp,
-		CrystalSentinel,
-		Doppleganger,
-		Dragon,
-		Balrog,
-	},
-}
-
-func GetBeastForLevel(level int, book *Beastiary) *Beast {
+func GetBeastForLevel(level int) *Beast {
 	var beastForLevel = []Beast{}
 
-	for _, beast := range book.beasts {
+	for _, beast := range Beastiary {
 		if beast.Level == level {
 			beastForLevel = append(beastForLevel, beast)
 		}

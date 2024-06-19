@@ -76,7 +76,7 @@ func (level Level) play() string {
 }
 
 func createLevel(level int) Level {
-	beast := beastiary.GetBeastForLevel(level, &beastiary.GetBeastiary)
+	beast := beastiary.GetBeastForLevel(level)
 	return Level{
 		Number:   currentLevel,
 		opponent: beast,

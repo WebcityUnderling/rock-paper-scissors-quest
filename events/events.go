@@ -6,7 +6,7 @@ import (
 )
 
 func IntroEvent() {
-	b, err := os.ReadFile("intro.txt")
+	b, err := os.ReadFile("ascii/intro.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -16,7 +16,7 @@ func IntroEvent() {
 }
 
 func TieEvent() {
-	b, err := os.ReadFile("tie.txt")
+	b, err := os.ReadFile("ascii/tie.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -24,7 +24,7 @@ func TieEvent() {
 }
 
 func TriumphEvent() {
-	b, err := os.ReadFile("triumph.txt")
+	b, err := os.ReadFile("ascii/triumph.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -32,7 +32,7 @@ func TriumphEvent() {
 }
 
 func ExitEvent() {
-	b, err := os.ReadFile("end.txt")
+	b, err := os.ReadFile("ascii/end.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -41,7 +41,7 @@ func ExitEvent() {
 }
 
 func DeathEvent(level int) {
-	b, err := os.ReadFile("death.txt")
+	b, err := os.ReadFile("ascii/death.txt")
 	if err != nil {
 		panic(err)
 	}
