@@ -14,6 +14,14 @@ func GetRandMove() int {
 	return move
 }
 
+func WeightedMove(attack int) int {
+	weight := rand.Intn(2)
+	if weight == 0 {
+		return attack
+	}
+	return GetRandMove()
+}
+
 func GetMoveIndex(move string) (int, error) {
 	for i := range Moves {
 		if Moves[i] == move {

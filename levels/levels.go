@@ -53,7 +53,7 @@ func Levels() {
 		case "Lose!":
 			events.DeathEvent(level.Number)
 			time.Sleep(500 * time.Millisecond)
-			fmt.Println("You Died. You got to level", level)
+			fmt.Println("You Died. You got to level", level.Number)
 			time.Sleep(2 * time.Second)
 			fmt.Println(level.opponent.WinMessage)
 			time.Sleep(2 * time.Second)
@@ -88,7 +88,7 @@ func (level Level) play() string {
 	case "Medium":
 		return moves.MatchResult(moveIndex, moves.GetRandMove())
 	case "Hard":
-		return moves.MatchResult(moveIndex, moves.GetRandMove())
+		return moves.MatchResult(moveIndex, moves.WeightedMove(level.opponent.Attack))
 	default:
 		return moves.MatchResult(moveIndex, level.opponent.Attack)
 	}
