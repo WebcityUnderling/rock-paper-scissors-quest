@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"phptogo/utils"
 )
 
 var Moves = [3]string{"Rock", "Paper", "Scissors"}
@@ -33,4 +34,9 @@ func MatchResult(player int, opponent int) string {
 	}
 
 	return "Lose!"
+}
+
+func ChooseMove() string {
+	move := utils.SelectPrompt("Choose your weapon...", []string{"Rock", "Paper", "Scissors"})
+	return move
 }

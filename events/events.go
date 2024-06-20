@@ -1,50 +1,49 @@
 package events
 
 import (
+	"bufio"
 	"fmt"
 	"os"
+	"time"
 )
 
 func IntroEvent() {
-	b, err := os.ReadFile("ascii/intro.txt")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(string(b))
+	asciiByLine("ascii/intro.txt")
+	time.Sleep(2 * time.Second)
 	fmt.Println("Welcome to Rock Paper Scissors Quest. It's simple, defeat all the monsters using either Rock, Paper or Scissors.")
-	fmt.Println("Type your move when prompted. Let's begin!\n\n")
+	time.Sleep(2 * time.Second)
+	fmt.Println("Type your move when prompted. Let's begin!")
+	time.Sleep(2 * time.Second)
 }
 
 func TieEvent() {
-	b, err := os.ReadFile("ascii/tie.txt")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(string(b))
+	asciiByLine("ascii/tie.txt")
+	time.Sleep(2 * time.Second)
 }
 
 func TriumphEvent() {
-	b, err := os.ReadFile("ascii/triumph.txt")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(string(b))
+	asciiByLine("ascii/triumph.txt")
 }
 
 func ExitEvent() {
-	b, err := os.ReadFile("ascii/end.txt")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(string(b))
+	asciiByLine("ascii/end.txt")
 	fmt.Println("Congratulations! You conquered the dungeon! Now you can brag to all your friends you are a Rock Paper Scissor Wizard")
 }
 
 func DeathEvent(level int) {
-	b, err := os.ReadFile("ascii/death.txt")
-	if err != nil {
-		panic(err)
+	asciiByLine("ascii/death.txt")
+
+}
+
+func asciiByLine(path string) {
+	f, e := os.Open(path)
+	if e != nil {
+		panic(e)
 	}
-	fmt.Println(string(b))
-	fmt.Println("You Died. You got to level", level)
+	defer f.Close()
+	s := bufio.NewScanner(f)
+	for s.Scan() {
+		println(s.Text())
+		time.Sleep(75 * time.Millisecond)
+	}
 }
