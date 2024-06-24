@@ -1,7 +1,5 @@
 package beastiary
 
-import "math/rand"
-
 type Beast struct {
 	Name          string
 	Level         int
@@ -112,16 +110,4 @@ var Beastiary = []Beast{
 	Doppleganger,
 	Dragon,
 	Balrog,
-}
-
-func GetBeastForLevel(level int) *Beast {
-	var beastForLevel = []Beast{}
-
-	for _, beast := range Beastiary {
-		if beast.Level == level {
-			beastForLevel = append(beastForLevel, beast)
-		}
-	}
-
-	return &beastForLevel[rand.Intn(len(beastForLevel))]
 }
