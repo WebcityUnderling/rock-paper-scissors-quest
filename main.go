@@ -7,6 +7,6 @@ import (
 
 func main() {
 	events.IntroEvent()
-	levels.Difficulty()
+	levels.SetDifficulty()
 	levels.Levels()
 }

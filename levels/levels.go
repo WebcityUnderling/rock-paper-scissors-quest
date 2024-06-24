@@ -1,6 +1,7 @@
 package levels
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"phptogo/beastiary"
@@ -17,9 +18,10 @@ type Level struct {
 	room     *rooms.Room
 }
 
+var ErrInvalidOutcome = errors.New("invalid outcome")
+
 var currentLevel = 1
-var invalidMove = false
-var difficulty = "Easy"
+var replayLevel = false
 
 func Levels() {
 	for {
@@ -30,7 +32,7 @@ func Levels() {
 		}
 
 		level := createLevel(currentLevel)
-		if !invalidMove {
+		if !replayLevel {
 			fmt.Println("\n\nLevel", level.Number, level.room.Name)
 			time.Sleep(2 * time.Second)
 			fmt.Println(level.room.Enter)
@@ -41,7 +43,11 @@ func Levels() {
 		result := level.play()
 
 		switch result {
-		case "Win!":
+		case 2:
+			events.TieEvent()
+			replayLevel = true
+			fmt.Println("Go Again!")
+		case 1:
 			events.TriumphEvent()
 			fmt.Println("You defeated", level.opponent.Name)
 			time.Sleep(2 * time.Second)
@@ -50,7 +56,7 @@ func Levels() {
 			fmt.Println(level.room.Leave)
 			time.Sleep(2 * time.Second)
 			currentLevel++
-		case "Lose!":
+		case 0:
 			events.DeathEvent(level.Number)
 			time.Sleep(500 * time.Millisecond)
 			fmt.Println("You Died. You got to level", level.Number)
@@ -59,21 +65,17 @@ func Levels() {
 			time.Sleep(2 * time.Second)
 			fmt.Println(level.room.Defeat)
 			return
-
-		case "error":
-			os.Exit(1)
-			invalidMove = true
 		default:
-			events.TieEvent()
-			invalidMove = true
-			fmt.Println("Go Again!")
+			// Something has gone terribly wrong
+			fmt.Println(ErrInvalidOutcome.Error())
+			os.Exit(1)
 		}
 
 	}
 }
 
-func (level Level) play() string {
-	invalidMove = false
+func (level Level) play() int {
+	replayLevel = false
 	var playerMove string
 	fmt.Println("\n\nRock, Paper, Scissors.... SHOOT!")
 	time.Sleep(1 * time.Second)
@@ -82,7 +84,7 @@ func (level Level) play() string {
 	moveIndex, err := moves.GetMoveIndex(playerMove)
 	if err != nil {
 		fmt.Println(err.Error())
-		return "error"
+		return -1
 	}
 	switch difficulty {
 	case "Medium":
@@ -103,12 +105,19 @@ func createLevel(level int) Level {
 	}
 }
 
-func Difficulty() {
-	d := utils.SelectPrompt("Set Difficulty:", []string{
+// Difficulty
+var difficulty = "Easy"
+
+func SetDifficulty() {
+	d, err := utils.SelectPrompt("Set Difficulty:", []string{
 		"Easy",
 		"Medium",
 		"Hard",
 	})
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
 
 	difficulty = d
 }

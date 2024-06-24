@@ -4,14 +4,14 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"os"
 	"phptogo/utils"
 )
 
 var Moves = [3]string{"Rock", "Paper", "Scissors"}
 
 func GetRandMove() int {
-	move := rand.Intn(len(Moves))
-	return move
+	return rand.Intn(len(Moves))
 }
 
 func WeightedMove(attack int) int {
@@ -28,23 +28,27 @@ func GetMoveIndex(move string) (int, error) {
 			return i, nil
 		}
 	}
-	return -1, errors.New("that is not a valid move, Try Rock Paper Or Scissors.")
+	return -1, errors.New("invalid move.")
 }
 
-func MatchResult(player int, opponent int) string {
-	fmt.Println(Moves[player], " vs ", Moves[opponent])
+func MatchResult(playerMove int, opponentMove int) int {
+	fmt.Println(Moves[playerMove], " vs ", Moves[opponentMove])
 
-	if player == opponent {
-		return "Tie!"
+	if playerMove == opponentMove {
+		return 2
 	}
-	if opponent < 2 && player == opponent+1 || opponent == 2 && player == 0 {
-		return "Win!"
+	if opponentMove < 2 && playerMove == opponentMove+1 || opponentMove == 2 && playerMove == 0 {
+		return 1
 	}
 
-	return "Lose!"
+	return 0
 }
 
 func ChooseMove() string {
-	move := utils.SelectPrompt("Choose your weapon...", []string{"Rock", "Paper", "Scissors"})
+	move, err := utils.SelectPrompt("Choose your weapon...", []string{"Rock", "Paper", "Scissors"})
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
 	return move
 }
