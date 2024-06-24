@@ -9,109 +9,101 @@ import (
 	"phptogo/moves"
 	"phptogo/rooms"
 	"phptogo/utils"
-	"time"
 )
 
+// Level Setup
 type Level struct {
 	Number   int
 	opponent *beastiary.Beast
 	room     *rooms.Room
 }
 
-var ErrInvalidOutcome = errors.New("invalid outcome")
+func createLevel(level int) Level {
+	return Level{
+		Number:   currentLevel,
+		opponent: &beastiary.Beastiary[level],
+		room:     &rooms.Dungeon[level],
+	}
+}
 
-var currentLevel = 1
+func ResetLevels() {
+	currentLevel = 0
+	replayLevel = false
+}
+
+var currentLevel = 0
 var replayLevel = false
+var levelCap = len(rooms.Dungeon)
+var ErrInvalidOutcome = errors.New("invalid match outcome")
 
+// Main Gameplay Loop
 func Levels() {
 	for {
-
-		if currentLevel > 10 {
-			events.ExitEvent()
+		// If you surpass the last level, break, exit event
+		if currentLevel >= levelCap {
+			events.PrintExitEvent()
 			break
 		}
-
 		level := createLevel(currentLevel)
 
+		// Only execute enter room event if this is the first time you've entered a room
 		if !replayLevel {
-			fmt.Println("\n\nLevel", level.Number, level.room.Name)
-			time.Sleep(2 * time.Second)
-			fmt.Println(level.room.Enter)
-			time.Sleep(2 * time.Second)
-			fmt.Println(level.opponent.EntryMessage)
-			time.Sleep(2 * time.Second)
+			events.PrintEnterRoomEvent(level.Number+1, level.opponent, level.room)
 		}
+
+		// Play a round of RPS
 		result, err := level.play()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-
+		resulteventfunc, ok := moves.MoveOutcomeEvents[result]
+		if ok {
+			resulteventfunc(level.Number+1, level.opponent, level.room)
+		}
 		switch result {
-		case 2:
-			events.TieEvent()
-			replayLevel = true
-			fmt.Println("Go Again!")
-		case 1:
-			events.TriumphEvent()
-			fmt.Println("You defeated", level.opponent.Name)
-			time.Sleep(2 * time.Second)
-			fmt.Println(level.opponent.DefeatMessage)
-			time.Sleep(2 * time.Second)
-			fmt.Println(level.room.Leave)
-			time.Sleep(2 * time.Second)
-			currentLevel++
 		case 0:
-			events.DeathEvent(level.Number)
-			time.Sleep(500 * time.Millisecond)
-			fmt.Println("You Died. You got to level", level.Number)
-			time.Sleep(2 * time.Second)
-			fmt.Println(level.opponent.WinMessage)
-			time.Sleep(2 * time.Second)
-			fmt.Println(level.room.Defeat)
 			return
+		case 1:
+			currentLevel++
+			replayLevel = false
 		default:
-			// Something has gone terribly wrong
-			fmt.Println(ErrInvalidOutcome.Error())
-			fmt.Println("No funny business.")
+			replayLevel = true
 		}
 	}
 }
 
+// RPS Logic
 func (level Level) play() (int, error) {
-	replayLevel = false
 	var playerMove string
-	fmt.Println("\n\nRock, Paper, Scissors.... SHOOT!")
-
-	playerMove = moves.ChooseMove()
-
+	playerMove = moves.SelectMove()
 	moveIndex := moves.MoveIndices[playerMove]
 
-	switch difficultiesIndex[difficulty] {
-	case 0:
-		return moves.MatchResult(moveIndex, level.opponent.Attack), nil
-	case 1:
-		return moves.MatchResult(moveIndex, moves.GetRandMove()), nil
-	case 2:
-		return moves.MatchResult(moveIndex, moves.WeightedMove(level.opponent.Attack)), nil
-	default:
-		return -1, ErrInvalidDiffiulty
+	difficultyFunc, ok := difficultyMoves[difficulty]
+	if ok {
+		return difficultyFunc(moveIndex, level), nil
 	}
+	return -1, ErrInvalidDifficulty
 }
 
-func createLevel(level int) Level {
-	return Level{
-		Number:   currentLevel,
-		opponent: &beastiary.Beastiary[level-1],
-		room:     &rooms.Dungeon[level-1],
-	}
+// Difficulty Settings
+type DifficultyFunc func(moveIndex int, level Level) int
+
+var difficultyMoves = map[string]DifficultyFunc{
+	"Easy": func(moveIndex int, level Level) int {
+		return moves.GetMatchResult(moveIndex, level.opponent.Attack)
+	},
+	"Medium": func(moveIndex int, level Level) int {
+		return moves.GetMatchResult(moveIndex, moves.GetRandMove())
+	},
+	"Hard": func(moveIndex int, level Level) int {
+		return moves.GetMatchResult(moveIndex, moves.GetWeightedMove(level.opponent.Attack))
+	},
 }
 
-// Difficulty
-var difficultiesIndex = map[string]int{"Easy": 0, "Medium": 1, "Hard": 2}
 var difficulties = []string{"Easy", "Medium", "Hard"}
 var difficulty = difficulties[0]
-var ErrInvalidDiffiulty = errors.New("invalid difficulty")
+var ErrInvalidDifficulty = errors.New("invalid difficulty")
 
 func SetDifficulty() {
 	d, err := utils.SelectPrompt("Set Difficulty:", difficulties)
@@ -119,6 +111,5 @@ func SetDifficulty() {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
-
 	difficulty = d
 }
