@@ -4,33 +4,72 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"os"
+	"phptogo/beastiary"
+	"phptogo/events"
+	"phptogo/rooms"
+	"phptogo/utils"
+	"time"
 )
 
-var Moves = [3]string{"Rock", "Paper", "Scissors"}
+type moveEventFunc func(level int, opponent *beastiary.Beast, room *rooms.Room)
+
+var MoveIndices = map[string]int{"Rock": 0, "Paper": 1, "Scissors": 2}
+var Moves = []string{"Rock", "Paper", "Scissors"}
+var ErrInvalidMove = errors.New("invalid move")
+
+var MoveOutcomeEvents = map[int]moveEventFunc{
+	0: func(level int, opponent *beastiary.Beast, room *rooms.Room) {
+		events.PrintDeathEvent(level, opponent, room)
+	},
+	1: func(level int, opponent *beastiary.Beast, room *rooms.Room) {
+		events.PrintTriumphEvent(opponent, room)
+
+	},
+	2: func(level int, opponent *beastiary.Beast, room *rooms.Room) {
+		events.PrintTieEvent()
+	},
+}
 
 func GetRandMove() int {
-	move := rand.Intn(len(Moves))
-	return move
+	return rand.Intn(len(Moves))
+}
+
+func GetWeightedMove(attack int) int {
+	weight := rand.Intn(2)
+	if weight == 0 {
+		return attack
+	}
+	return GetRandMove()
 }
 
 func GetMoveIndex(move string) (int, error) {
-	for i := range Moves {
-		if Moves[i] == move {
-			return i, nil
-		}
+	if index, ok := MoveIndices[move]; ok {
+		return index, nil
 	}
-	return -1, errors.New("that is not a valid move, Try Rock Paper Or Scissors.")
+	return -1, ErrInvalidMove
 }
 
-func MatchResult(player int, opponent int) string {
-	fmt.Println(Moves[player], " vs ", Moves[opponent])
+func GetMatchResult(playerMove int, opponentMove int) int {
+	fmt.Println(Moves[playerMove], " vs ", Moves[opponentMove])
 
-	if player == opponent {
-		return "Tie!"
+	if playerMove == opponentMove {
+		return 2
 	}
-	if opponent < 2 && player == opponent+1 || opponent == 2 && player == 0 {
-		return "Win!"
+	if opponentMove < 2 && playerMove == opponentMove+1 || opponentMove == 2 && playerMove == 0 {
+		return 1
 	}
 
-	return "Lose!"
+	return 0
+}
+
+func SelectMove() string {
+	fmt.Println("\nRock, Paper, Scissors.... SHOOT!")
+	time.Sleep(1 * time.Second)
+	move, err := utils.SelectPrompt("Choose your weapon...", Moves)
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+	return move
 }

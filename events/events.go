@@ -2,49 +2,57 @@ package events
 
 import (
 	"fmt"
-	"os"
+	"phptogo/beastiary"
+	"phptogo/rooms"
+	"phptogo/utils"
+	"time"
 )
 
-func IntroEvent() {
-	b, err := os.ReadFile("intro.txt")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(string(b))
+func PrintIntroEvent() {
+	utils.PrintAsciiByLine("ascii/intro.txt")
+	time.Sleep(2 * time.Second)
 	fmt.Println("Welcome to Rock Paper Scissors Quest. It's simple, defeat all the monsters using either Rock, Paper or Scissors.")
-	fmt.Println("Type your move when prompted. Let's begin!\n\n")
+	time.Sleep(2 * time.Second)
+	fmt.Println("Type your move when prompted. Let's begin!")
+	time.Sleep(2 * time.Second)
 }
 
-func TieEvent() {
-	b, err := os.ReadFile("tie.txt")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(string(b))
+func PrintEnterRoomEvent(level int, opponent *beastiary.Beast, room *rooms.Room) {
+	fmt.Println("\n\nLevel", level, room.Name)
+	time.Sleep(2 * time.Second)
+	fmt.Println(room.Enter)
+	time.Sleep(2 * time.Second)
+	fmt.Println(opponent.EntryMessage)
+	time.Sleep(2 * time.Second)
 }
 
-func TriumphEvent() {
-	b, err := os.ReadFile("triumph.txt")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(string(b))
+func PrintTieEvent() {
+	utils.PrintAsciiByLine("ascii/tie.txt")
+	time.Sleep(2 * time.Second)
+	fmt.Println("Go Again!")
 }
 
-func ExitEvent() {
-	b, err := os.ReadFile("end.txt")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(string(b))
-	fmt.Println("Congratulations! You conquered the dungeon! Now you can brag to all your friends you are a Rock Paper Scissor Wizard")
+func PrintTriumphEvent(opponent *beastiary.Beast, room *rooms.Room) {
+	utils.PrintAsciiByLine("ascii/triumph.txt")
+	fmt.Println("You defeated", opponent.Name)
+	time.Sleep(2 * time.Second)
+	fmt.Println(opponent.DefeatMessage)
+	time.Sleep(2 * time.Second)
+	fmt.Println(room.Leave)
+	time.Sleep(2 * time.Second)
 }
 
-func DeathEvent(level int) {
-	b, err := os.ReadFile("death.txt")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(string(b))
+func PrintDeathEvent(level int, opponent *beastiary.Beast, room *rooms.Room) {
+	utils.PrintAsciiByLine("ascii/death.txt")
+	time.Sleep(500 * time.Millisecond)
 	fmt.Println("You Died. You got to level", level)
+	time.Sleep(2 * time.Second)
+	fmt.Println(opponent.WinMessage)
+	time.Sleep(2 * time.Second)
+	fmt.Println(room.Defeat)
+}
+
+func PrintExitEvent() {
+	utils.PrintAsciiByLine("ascii/end.txt")
+	fmt.Println("Congratulations! You conquered the dungeon! Now you can brag to all your friends you are a Rock Paper Scissor Wizard")
 }
