@@ -6,9 +6,11 @@ import (
 	"math/rand"
 	"os"
 	"phptogo/utils"
+	"time"
 )
 
-var Moves = [3]string{"Rock", "Paper", "Scissors"}
+var MoveIndices = map[string]int{"Rock": 0, "Paper": 1, "Scissors": 2}
+var Moves = []string{"Rock", "Paper", "Scissors"}
 
 func GetRandMove() int {
 	return rand.Intn(len(Moves))
@@ -23,12 +25,10 @@ func WeightedMove(attack int) int {
 }
 
 func GetMoveIndex(move string) (int, error) {
-	for i := range Moves {
-		if Moves[i] == move {
-			return i, nil
-		}
+	if index, ok := MoveIndices[move]; ok {
+		return index, nil
 	}
-	return -1, errors.New("invalid move.")
+	return -1, errors.New("invalid move")
 }
 
 func MatchResult(playerMove int, opponentMove int) int {
@@ -45,7 +45,8 @@ func MatchResult(playerMove int, opponentMove int) int {
 }
 
 func ChooseMove() string {
-	move, err := utils.SelectPrompt("Choose your weapon...", []string{"Rock", "Paper", "Scissors"})
+	time.Sleep(1 * time.Second)
+	move, err := utils.SelectPrompt("Choose your weapon...", Moves)
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
