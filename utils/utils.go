@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"os"
+	"strings"
 	"time"
 
 	"github.com/manifoldco/promptui"
@@ -29,13 +29,9 @@ func SelectPrompt(label string, items []string) (string, error) {
 	return result, nil
 }
 
-func PrintAsciiByLine(path string) {
-	f, e := os.Open(path)
-	if e != nil {
-		panic(e)
-	}
-	defer f.Close()
-	s := bufio.NewScanner(f)
+func PrintAsciiByLine(content string) {
+
+	s := bufio.NewScanner(strings.NewReader(content))
 	for s.Scan() {
 		println(s.Text())
 		time.Sleep(75 * time.Millisecond)

@@ -1,6 +1,7 @@
 package events
 
 import (
+	_ "embed"
 	"fmt"
 	"phptogo/beastiary"
 	"phptogo/rooms"
@@ -8,8 +9,11 @@ import (
 	"time"
 )
 
+//go:embed ascii/intro.txt
+var introTxt string
+
 func PrintIntroEvent() {
-	utils.PrintAsciiByLine("ascii/intro.txt")
+	utils.PrintAsciiByLine(introTxt)
 	time.Sleep(2 * time.Second)
 	fmt.Println("Welcome to Rock Paper Scissors Quest. It's simple, defeat all the monsters using either Rock, Paper or Scissors.")
 	time.Sleep(2 * time.Second)
@@ -26,14 +30,20 @@ func PrintEnterRoomEvent(level int, opponent *beastiary.Beast, room *rooms.Room)
 	time.Sleep(2 * time.Second)
 }
 
+//go:embed ascii/tie.txt
+var TieTxt string
+
 func PrintTieEvent() {
-	utils.PrintAsciiByLine("ascii/tie.txt")
+	utils.PrintAsciiByLine(TieTxt)
 	time.Sleep(2 * time.Second)
 	fmt.Println("Go Again!")
 }
 
+//go:embed ascii/triumph.txt
+var TriumphTxt string
+
 func PrintTriumphEvent(opponent *beastiary.Beast, room *rooms.Room) {
-	utils.PrintAsciiByLine("ascii/triumph.txt")
+	utils.PrintAsciiByLine(TriumphTxt)
 	fmt.Println("You defeated", opponent.Name)
 	time.Sleep(2 * time.Second)
 	fmt.Println(opponent.DefeatMessage)
@@ -42,8 +52,11 @@ func PrintTriumphEvent(opponent *beastiary.Beast, room *rooms.Room) {
 	time.Sleep(2 * time.Second)
 }
 
+//go:embed ascii/death.txt
+var DeathTxt string
+
 func PrintDeathEvent(level int, opponent *beastiary.Beast, room *rooms.Room) {
-	utils.PrintAsciiByLine("ascii/death.txt")
+	utils.PrintAsciiByLine(DeathTxt)
 	time.Sleep(500 * time.Millisecond)
 	fmt.Println("You Died. You got to level", level)
 	time.Sleep(2 * time.Second)
@@ -52,7 +65,10 @@ func PrintDeathEvent(level int, opponent *beastiary.Beast, room *rooms.Room) {
 	fmt.Println(room.Defeat)
 }
 
+//go:embed ascii/end.txt
+var EndTxt string
+
 func PrintExitEvent() {
-	utils.PrintAsciiByLine("ascii/end.txt")
+	utils.PrintAsciiByLine(EndTxt)
 	fmt.Println("Congratulations! You conquered the dungeon! Now you can brag to all your friends you are a Rock Paper Scissor Wizard")
 }
