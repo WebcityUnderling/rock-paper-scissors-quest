@@ -22,5 +22,8 @@ Once you have mastered the Easy difficulty, give Medium difficulty a try. Monste
 ### Hard
 There is no predicting what move a monster will throw. The dungeon has become self aware and has bestowed the knowledge on it's inhabitants that there is no strategy; **just pure random chaos**. Good luck. 
 
+## Build
+run `go build` (with options if you so desire) to get an executable file of the game. 
+
 **Enjoy Rock Paper Scissors Quest**
 
