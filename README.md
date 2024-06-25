@@ -1,4 +1,4 @@
-# rock-paper-scissors-quest (RPSQ)
+# Rock Paper Scissors Quest (RPSQ)
 The stupidest game idea ever
 
 ## Install Dependencies
@@ -20,7 +20,7 @@ Each Monster has a favourite move, they will only ever throw that move. Study th
 Once you have mastered the Easy difficulty, give Medium difficulty a try. Monsters still have a preference, but have a 33.333% chance of switching it up. 
 
 ### Hard
-There is no predicting what move a monster will throw. The dungeon has become self aware and has bestowed the knowledge on it's inhabitants that there is no strategy; just pure random chaos. Good luck. 
+There is no predicting what move a monster will throw. The dungeon has become self aware and has bestowed the knowledge on it's inhabitants that there is no strategy; **just pure random chaos**. Good luck. 
 
-Enjoy Rock Paper Scissors Quest
+**Enjoy Rock Paper Scissors Quest**
 
