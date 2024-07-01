@@ -7,6 +7,7 @@ import (
 	"rpsq/rooms"
 	"rpsq/setup"
 	"rpsq/utils"
+	"sync"
 	"time"
 )
 
@@ -23,7 +24,9 @@ func SetEventTimeout() {
 //go:embed ascii/intro.txt
 var introTxt string
 
-func PrintIntroEvent() string {
+func PrintIntroEvent(wg *sync.WaitGroup) string {
+	defer wg.Done()
+	wg.Add(1)
 	utils.PrintAsciiByLine(introTxt)
 	time.Sleep(sleepDuration)
 	fmt.Println("Welcome to Rock Paper Scissors Quest. It's simple, defeat all the monsters using either Rock, Paper or Scissors.")

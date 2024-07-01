@@ -8,18 +8,38 @@ import (
 	"rpsq/moves"
 	"rpsq/rooms"
 	"rpsq/utils"
+	"sync"
 )
 
 // Level Setup
+var currentLevel = 0
+var replayLevel = false
+var levelCap = len(rooms.Dungeon)
+var ErrInvalidOutcome = errors.New("invalid match outcome")
+
 type Level struct {
 	Number   int
 	opponent *beastiary.Beast
 	room     *rooms.Room
 }
 
+var allLevels []Level
+
+func CreateLevels(wg *sync.WaitGroup) error {
+	defer wg.Done()
+	wg.Add(1)
+	levels := []Level{}
+
+	for i := 0; i < levelCap; i++ {
+		levels = append(levels, createLevel(i))
+	}
+	allLevels = levels
+	return nil
+}
+
 func createLevel(level int) Level {
 	return Level{
-		Number:   currentLevel,
+		Number:   level,
 		opponent: &beastiary.Beastiary[level],
 		room:     &rooms.Dungeon[level],
 	}
@@ -30,11 +50,6 @@ func ResetLevels() {
 	replayLevel = false
 }
 
-var currentLevel = 0
-var replayLevel = false
-var levelCap = len(rooms.Dungeon)
-var ErrInvalidOutcome = errors.New("invalid match outcome")
-
 // Main Gameplay Loop
 func Levels() {
 	for {
@@ -43,7 +58,7 @@ func Levels() {
 			events.PrintExitEvent()
 			break
 		}
-		level := createLevel(currentLevel)
+		level := allLevels[currentLevel]
 
 		// Only execute enter room event if this is the first time you've entered a room
 		if !replayLevel {
