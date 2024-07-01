@@ -1,1 +1,2 @@
-go build -ldflags "-X 'rpsq/setup.Environment=Anything'" -o RPSQ
+go test ./...
+go build -ldflags "-X 'rpsq/setup.Environment=production'" -o RPSQ
