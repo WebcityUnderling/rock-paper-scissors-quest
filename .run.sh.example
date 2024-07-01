@@ -1,0 +1,4 @@
+# "development" || "production"
+export ENVIRONMENT="development" 
+
+go run main.go

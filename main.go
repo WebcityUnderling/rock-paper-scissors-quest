@@ -10,6 +10,7 @@ var replayResponsesMap = map[string]bool{"Yes": true, "No": false}
 var replayResponses = []string{"Yes", "No"}
 
 func main() {
+	events.SetEventTimeout()
 	// Boot screen
 	events.PrintIntroEvent()
 	// Gameplay loop
