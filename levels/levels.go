@@ -3,7 +3,6 @@ package levels
 import (
 	"errors"
 	"fmt"
-	"os"
 	"phptogo/beastiary"
 	"phptogo/events"
 	"phptogo/moves"
@@ -54,8 +53,7 @@ func Levels() {
 		// Play a round of RPS
 		result, err := level.play()
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			fmt.Println(err, "You cannot escape, Your opponent is waiting...")
 		}
 		resulteventfunc, ok := moves.MoveOutcomeEvents[result]
 		if ok {
@@ -75,11 +73,13 @@ func Levels() {
 
 // RPS Logic
 func (level Level) play() (int, error) {
-	var playerMove string
-	playerMove = moves.SelectMove()
+	playerMove, err := moves.SelectMove()
+	if err != nil {
+		return -1, err
+	}
 	moveIndex := moves.MoveIndices[playerMove]
 
-	difficultyFunc, ok := difficultyMoves[difficulty]
+	difficultyFunc, ok := difficultyMoves[Difficulty]
 	if ok {
 		return difficultyFunc(moveIndex, level), nil
 	}
@@ -91,25 +91,28 @@ type DifficultyFunc func(moveIndex int, level Level) int
 
 var difficultyMoves = map[string]DifficultyFunc{
 	"Easy": func(moveIndex int, level Level) int {
-		return moves.GetMatchResult(moveIndex, level.opponent.Attack)
+		result, _ := moves.GetMatchResult(moveIndex, level.opponent.Attack)
+		return result
 	},
 	"Medium": func(moveIndex int, level Level) int {
-		return moves.GetMatchResult(moveIndex, moves.GetRandMove())
+		result, _ := moves.GetMatchResult(moveIndex, moves.GetRandMove())
+		return result
 	},
 	"Hard": func(moveIndex int, level Level) int {
-		return moves.GetMatchResult(moveIndex, moves.GetWeightedMove(level.opponent.Attack))
+		result, _ := moves.GetMatchResult(moveIndex, moves.GetWeightedMove(level.opponent.Attack))
+		return result
 	},
 }
 
-var difficulties = []string{"Easy", "Medium", "Hard"}
-var difficulty = difficulties[0]
+var Difficulties = []string{"Easy", "Medium", "Hard"}
+var Difficulty = Difficulties[0]
 var ErrInvalidDifficulty = errors.New("invalid difficulty")
 
-func SetDifficulty() {
-	d, err := utils.SelectPrompt("Set Difficulty:", difficulties)
+func SetDifficulty(prompter utils.Prompter) {
+	d, err := prompter.SelectPrompt("Select Difficulty", Difficulties)
 	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
+		fmt.Printf("Error setting level, defaulting to %s", Difficulty)
+	} else {
+		Difficulty = d
 	}
-	difficulty = d
 }

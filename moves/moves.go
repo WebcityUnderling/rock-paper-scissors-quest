@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
-	"os"
 	"phptogo/beastiary"
 	"phptogo/events"
 	"phptogo/rooms"
@@ -43,33 +42,30 @@ func GetWeightedMove(attack int) int {
 	return GetRandMove()
 }
 
-func GetMoveIndex(move string) (int, error) {
-	if index, ok := MoveIndices[move]; ok {
-		return index, nil
+func GetMatchResult(playerMove int, opponentMove int) (int, error) {
+	//check move set length can include move pointers
+	if playerMove > len(Moves)-1 || opponentMove > len(Moves)-1 {
+		return 0, ErrInvalidMove
 	}
-	return -1, ErrInvalidMove
-}
 
-func GetMatchResult(playerMove int, opponentMove int) int {
 	fmt.Println(Moves[playerMove], " vs ", Moves[opponentMove])
 
 	if playerMove == opponentMove {
-		return 2
+		return 2, nil
 	}
 	if opponentMove < 2 && playerMove == opponentMove+1 || opponentMove == 2 && playerMove == 0 {
-		return 1
+		return 1, nil
 	}
 
-	return 0
+	return 0, nil
 }
 
-func SelectMove() string {
+func SelectMove() (string, error) {
 	fmt.Println("\nRock, Paper, Scissors.... SHOOT!")
 	time.Sleep(1 * time.Second)
-	move, err := utils.SelectPrompt("Choose your weapon...", Moves)
+	move, err := utils.Prompter.SelectPrompt(utils.LivePrompter{}, "Choose your weapon...", Moves)
 	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
+		return "error", err
 	}
-	return move
+	return move, nil
 }

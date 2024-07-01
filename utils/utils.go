@@ -3,16 +3,21 @@ package utils
 import (
 	"bufio"
 	"errors"
-	"fmt"
 	"strings"
 	"time"
 
 	"github.com/manifoldco/promptui"
 )
 
-var ErrSelectInvalid = errors.New("invalid selection")
+type Prompter interface {
+	SelectPrompt(label string, items []string) (string, error)
+}
 
-func SelectPrompt(label string, items []string) (string, error) {
+type LivePrompter struct{}
+
+var ErrSelectInvalid = errors.New("Invalid selection.")
+
+func (rp LivePrompter) SelectPrompt(label string, items []string) (string, error) {
 	prompt := promptui.Select{
 		Label:    label,
 		Items:    items,
@@ -22,7 +27,6 @@ func SelectPrompt(label string, items []string) (string, error) {
 	_, result, err := prompt.Run()
 
 	if err != nil {
-		fmt.Printf("Prompt failed %v\n", err)
 		return "", ErrSelectInvalid
 	}
 
