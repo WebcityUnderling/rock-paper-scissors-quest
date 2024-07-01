@@ -14,7 +14,9 @@ func main() {
 	events.SetEventTimeout()
 	wg := sync.WaitGroup{}
 
+	wg.Add(1)
 	go events.PrintIntroEvent(&wg)
+	wg.Add(1)
 	go levels.CreateLevels(&wg) // Boot screen
 
 	wg.Wait()

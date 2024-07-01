@@ -14,7 +14,7 @@ import (
 // Level Setup
 var currentLevel = 0
 var replayLevel = false
-var levelCap = len(rooms.Dungeon)
+var LevelCap = len(rooms.Dungeon)
 var ErrInvalidOutcome = errors.New("invalid match outcome")
 
 type Level struct {
@@ -23,18 +23,16 @@ type Level struct {
 	room     *rooms.Room
 }
 
-var allLevels []Level
+var AllLevels []Level
 
-func CreateLevels(wg *sync.WaitGroup) error {
+func CreateLevels(wg *sync.WaitGroup) {
 	defer wg.Done()
-	wg.Add(1)
 	levels := []Level{}
 
-	for i := 0; i < levelCap; i++ {
+	for i := 0; i < LevelCap; i++ {
 		levels = append(levels, createLevel(i))
 	}
-	allLevels = levels
-	return nil
+	AllLevels = levels
 }
 
 func createLevel(level int) Level {
@@ -54,11 +52,11 @@ func ResetLevels() {
 func Levels() {
 	for {
 		// If you surpass the last level, break, exit event
-		if currentLevel >= levelCap {
+		if currentLevel >= LevelCap {
 			events.PrintExitEvent()
 			break
 		}
-		level := allLevels[currentLevel]
+		level := AllLevels[currentLevel]
 
 		// Only execute enter room event if this is the first time you've entered a room
 		if !replayLevel {
