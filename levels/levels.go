@@ -3,23 +3,41 @@ package levels
 import (
 	"errors"
 	"fmt"
-	"phptogo/beastiary"
-	"phptogo/events"
-	"phptogo/moves"
-	"phptogo/rooms"
-	"phptogo/utils"
+	"rpsq/beastiary"
+	"rpsq/events"
+	"rpsq/moves"
+	"rpsq/rooms"
+	"rpsq/utils"
+	"sync"
 )
 
 // Level Setup
+var currentLevel = 0
+var replayLevel = false
+var LevelCap = len(rooms.Dungeon)
+var ErrInvalidOutcome = errors.New("invalid match outcome")
+
 type Level struct {
 	Number   int
 	opponent *beastiary.Beast
 	room     *rooms.Room
 }
 
+var AllLevels []Level
+
+func CreateLevels(wg *sync.WaitGroup) {
+	defer wg.Done()
+	levels := []Level{}
+
+	for i := 0; i < LevelCap; i++ {
+		levels = append(levels, createLevel(i))
+	}
+	AllLevels = levels
+}
+
 func createLevel(level int) Level {
 	return Level{
-		Number:   currentLevel,
+		Number:   level,
 		opponent: &beastiary.Beastiary[level],
 		room:     &rooms.Dungeon[level],
 	}
@@ -30,20 +48,15 @@ func ResetLevels() {
 	replayLevel = false
 }
 
-var currentLevel = 0
-var replayLevel = false
-var levelCap = len(rooms.Dungeon)
-var ErrInvalidOutcome = errors.New("invalid match outcome")
-
 // Main Gameplay Loop
 func Levels() {
 	for {
 		// If you surpass the last level, break, exit event
-		if currentLevel >= levelCap {
+		if currentLevel >= LevelCap {
 			events.PrintExitEvent()
 			break
 		}
-		level := createLevel(currentLevel)
+		level := AllLevels[currentLevel]
 
 		// Only execute enter room event if this is the first time you've entered a room
 		if !replayLevel {

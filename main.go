@@ -1,17 +1,26 @@
 package main
 
 import (
-	"phptogo/events"
-	"phptogo/levels"
-	"phptogo/utils"
+	"rpsq/events"
+	"rpsq/levels"
+	"rpsq/utils"
+	"sync"
 )
 
 var replayResponsesMap = map[string]bool{"Yes": true, "No": false}
 var replayResponses = []string{"Yes", "No"}
 
 func main() {
-	// Boot screen
-	events.PrintIntroEvent()
+	events.SetEventTimeout()
+	wg := sync.WaitGroup{}
+
+	wg.Add(1)
+	go events.PrintIntroEvent(&wg)
+	wg.Add(1)
+	go levels.CreateLevels(&wg) // Boot screen
+
+	wg.Wait()
+
 	// Gameplay loop
 	for {
 		levels.SetDifficulty(utils.LivePrompter{})

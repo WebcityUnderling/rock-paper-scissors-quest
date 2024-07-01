@@ -3,6 +3,7 @@ package utils
 import (
 	"bufio"
 	"errors"
+	"rpsq/setup"
 	"strings"
 	"time"
 
@@ -34,10 +35,14 @@ func (rp LivePrompter) SelectPrompt(label string, items []string) (string, error
 }
 
 func PrintAsciiByLine(content string) {
+	timeout := 75 * time.Millisecond
+	if setup.Environment == "development" {
+		timeout = 0
+	}
 
 	s := bufio.NewScanner(strings.NewReader(content))
 	for s.Scan() {
 		println(s.Text())
-		time.Sleep(75 * time.Millisecond)
+		time.Sleep(timeout)
 	}
 }
