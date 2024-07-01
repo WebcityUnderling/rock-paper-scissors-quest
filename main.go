@@ -1,6 +1,7 @@
 package main
 
 import (
+	"phptogo/events"
 	"phptogo/levels"
 	"phptogo/utils"
 )
@@ -10,7 +11,7 @@ var replayResponses = []string{"Yes", "No"}
 
 func main() {
 	// Boot screen
-	// events.PrintIntroEvent()
+	events.PrintIntroEvent()
 	// Gameplay loop
 	for {
 		levels.SetDifficulty(utils.LivePrompter{})
