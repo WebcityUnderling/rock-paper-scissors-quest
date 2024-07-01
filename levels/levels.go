@@ -3,11 +3,11 @@ package levels
 import (
 	"errors"
 	"fmt"
-	"phptogo/beastiary"
-	"phptogo/events"
-	"phptogo/moves"
-	"phptogo/rooms"
-	"phptogo/utils"
+	"rpsq/beastiary"
+	"rpsq/events"
+	"rpsq/moves"
+	"rpsq/rooms"
+	"rpsq/utils"
 )
 
 // Level Setup

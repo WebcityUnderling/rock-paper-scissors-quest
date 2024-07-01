@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
-	"phptogo/beastiary"
-	"phptogo/events"
-	"phptogo/rooms"
-	"phptogo/utils"
+	"rpsq/beastiary"
+	"rpsq/events"
+	"rpsq/rooms"
+	"rpsq/utils"
 	"time"
 )
 

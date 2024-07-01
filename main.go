@@ -1,9 +1,8 @@
 package main
 
 import (
-	"phptogo/events"
-	"phptogo/levels"
-	"phptogo/utils"
+	"rpsq/levels"
+	"rpsq/utils"
 )
 
 var replayResponsesMap = map[string]bool{"Yes": true, "No": false}

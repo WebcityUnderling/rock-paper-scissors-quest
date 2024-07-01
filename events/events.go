@@ -3,21 +3,15 @@ package events
 import (
 	_ "embed"
 	"fmt"
-	"os"
-	"phptogo/beastiary"
-	"phptogo/rooms"
-	"phptogo/utils"
+	"rpsq/beastiary"
+	"rpsq/rooms"
+	"rpsq/utils"
 	"time"
 )
 
 type Timeout int
 
 var sleepDuration = 2000 * time.Millisecond
-
-func SetEventTimeout() {
-
-	fmt.Println(os.Getenv("ENVIRONMENT"))
-}
 
 //go:embed ascii/intro.txt
 var introTxt string

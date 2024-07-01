@@ -1,7 +1,7 @@
 package moves_test
 
 import (
-	"phptogo/moves"
+	"rpsq/moves"
 	"testing"
 )
 

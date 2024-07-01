@@ -2,7 +2,7 @@ package levels_test
 
 import (
 	"fmt"
-	"phptogo/levels"
+	"rpsq/levels"
 	"testing"
 )
 

@@ -1,0 +1,1 @@
+go build -ldflags "-X 'rpsq/setup.Environment=Anything'" -o RPSQ
