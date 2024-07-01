@@ -6,7 +6,6 @@ import (
 	"phptogo/utils"
 )
 
-var initialised = false
 var replayResponsesMap = map[string]bool{"Yes": true, "No": false}
 var replayResponses = []string{"Yes", "No"}
 
@@ -15,9 +14,9 @@ func main() {
 	events.PrintIntroEvent()
 	// Gameplay loop
 	for {
-		levels.SetDifficulty()
+		levels.SetDifficulty(utils.LivePrompter{})
 		levels.Levels()
-		replay, _ := utils.SelectPrompt("Play Again?", replayResponses)
+		replay, _ := utils.Prompter.SelectPrompt(utils.LivePrompter{}, "Play again?", replayResponses)
 		if !replayResponsesMap[replay] {
 			break
 		}

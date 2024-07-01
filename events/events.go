@@ -12,13 +12,14 @@ import (
 //go:embed ascii/intro.txt
 var introTxt string
 
-func PrintIntroEvent() {
+func PrintIntroEvent() string {
 	utils.PrintAsciiByLine(introTxt)
 	time.Sleep(2 * time.Second)
 	fmt.Println("Welcome to Rock Paper Scissors Quest. It's simple, defeat all the monsters using either Rock, Paper or Scissors.")
 	time.Sleep(2 * time.Second)
 	fmt.Println("Type your move when prompted. Let's begin!")
 	time.Sleep(2 * time.Second)
+	return "event:intro"
 }
 
 func PrintEnterRoomEvent(level int, opponent *beastiary.Beast, room *rooms.Room) {
