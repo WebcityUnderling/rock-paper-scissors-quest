@@ -1,6 +1,7 @@
 package main
 
 import (
+	"rpsq/events"
 	"rpsq/levels"
 	"rpsq/utils"
 )
