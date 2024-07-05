@@ -1,2 +1,3 @@
+go get
 go test ./...
 go build -ldflags "-X 'rpsq/setup.Environment=production'" -o RPSQ
